@@ -1,0 +1,29 @@
+{
+  "name": "juicebot",
+  "version": "1.0.0",
+  "description": "gambling juice bot ",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thebigblase/juicebot.git"
+  },
+  "keywords": [
+    "irc",
+    "twitch-chat"
+  ],
+  "author": "thebigblase",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/thebigblase/juicebot/issues"
+  },
+  "homepage": "https://github.com/thebigblase/juicebot#readme",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "enmap": "^5.8.7",
+    "tmi.js": "^1.8.5",
+    "util": "^0.12.4"
+  }
+}
