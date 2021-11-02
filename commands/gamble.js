@@ -4,7 +4,7 @@ const ops = require('../res/operations');
 
 
 async function main(qqt, channel, context, client){
-	let userId = context['user-id'];
+	let userId = Number(context['user-id']);
 	if(ops.getJuice(userId) < qqt){
 		return client.say(channel, "@${context.username} you don't have enough juice !");
 	}
@@ -20,7 +20,7 @@ async function main(qqt, channel, context, client){
 exports.run = async (channel, context, msg, self, args, uptime, client) => {
 	try {
 			// Connect to the MongoDB cluster
-		await main(args[0], channel, context, client);
+		await main(Number(args[0]), channel, context, client);
 
 	} 
 	catch (e) {

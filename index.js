@@ -8,8 +8,8 @@ const Enmap = require('enmap');
 // Define configuration options
 const opts = {
   identity: {
-    username: settings.clientId,
-    password: settings.clientSecret
+    username: "big_blase",
+    password: settings.token
   },
   channels: settings.channels
 };
