@@ -38,7 +38,7 @@ async function onMessageHandler (target, context, msg, self) {
 	if (!msg.startsWith(settings.prefix)) return;
 	if(!client.commands.get(calledCommand)) return;
 
-	client.commands.get(calledCommand).run(target, context, msg, self, args, uptime);
+	client.commands.get(calledCommand).run(target, context, msg, self, args, uptime, client);
 }
 
 
@@ -56,6 +56,7 @@ async function onConnectedHandler (addr, port) {
 			console.log(chalk.blue(`Attempting to load ${commandName}`));
 		});
 		console.log(chalk.green("Loaded all commands"));
+		await client.say("big_blase", "i'm alive");
 		}
 		catch(err){
 				console.log(chalk.bgRed("error in init : ",err));
