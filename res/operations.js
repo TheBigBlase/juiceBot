@@ -10,40 +10,47 @@ const juicers = db.collection("Juicers");
 
 client.connect();
 
-const add = async function(userId, amount){
-	let bank = await getJuice(userId) || 0; // vacuity (is that english halp) check 
-	if (bank == 0){
-		return await juicers.insertOne({_id: userId, bank: bank});
+const add = async function(userId, amount, juice){
+	if (juice == undefined){
+		await juicers.insertOne({_id: userId, bank: amount});
+		return true;
 	}
 	await juicers.updateOne({_id:userId}, {$inc:{bank: amount}});
-	return 0;
-}
-
-const rm = async function(userId, amount){
-	let bank = await getJuice(userId) || 0; // vacuity (is that english halp) check 
-	if (bank == 0){
-		return await juicers.insertOne({_id: userId, bank: bank});
-	}
-	if(bank < amount) return false; //not enough juice
-	await juicers.updateOne({_id:userId}, {bank: {$inc:{bank: -amount}}}); //rm juice
 	return true;
 }
 
-const give = async function(giverId, recieverId, amount){
+const rm = async function(userId, amount, juice){
+	if (juice == undefined){
+		await juicers.insertOne({_id: userId, bank: 0});
+		return;
+	}
+	if(juice < amount) return false; //not enough juice
+	await juicers.updateOne({_id:userId}, {$inc:{bank: -amount}}); //rm juice
+	return true;
+}
+
+const give = async function(giverId, recieverId, amount, juiceGiver){
 	if(!rm(giverId, amount)) return false;//not enough juice
 	add(recieverId, amount);
 	rm(giverId, amount);
 	return true;
 }
 
+const set = async function(userId, amount){
+	await juicers.updateOne({_id:userId}, {$set: {bank: amount}}); // WARNING undefined issue
+	return true;
+}
+
 const getJuice = async function(userId){
-	qsdf = await juicers.findOne({_id: userId})
-	return qsdf['bank'];
+	res = await juicers.findOne({_id: userId});
+	if(!res || res['bank'] == undefined) return undefined;
+	return res['bank'];
 }
 
 module.exports = {
 	add:add, 
 	rm:rm,
 	give:give,
-	getJuice:getJuice
+	getJuice:getJuice,
+	set:set
 }

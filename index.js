@@ -8,7 +8,7 @@ const Enmap = require('enmap');
 // Define configuration options
 const opts = {
   identity: {
-    username: "big_blase",
+    username: settings.nickname,
     password: settings.token
   },
   channels: settings.channels
@@ -56,7 +56,7 @@ async function onConnectedHandler (addr, port) {
 			console.log(chalk.blue(`Attempting to load ${commandName}`));
 		});
 		console.log(chalk.green("Loaded all commands"));
-		await client.say("big_blase", "i'm alive");
+		await client.say("big_blase", "I'm online PagMan");
 		}
 		catch(err){
 				console.log(chalk.bgRed("error in init : ",err));
