@@ -1,4 +1,5 @@
 const tmi = require('tmi.js');
+const {performance} = require('perf_hooks');
 const settings = require('./settings.json');
 const chalk = require('chalk');
 const {promisify, addListener} = require('util');
