@@ -1,6 +1,5 @@
 const {MongoClient} = require('mongodb');
 const settings = require('../settings');
-//2ws1uq2ncq6x21tgwjhh7h0bpqsjs6
 
 const uri = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
 
@@ -29,10 +28,10 @@ const rm = async function(userId, amount, juice){
 	return true;
 }
 
-const give = async function(giverId, recieverId, amount, juiceGiver){
-	if(!rm(giverId, amount)) return false;//not enough juice
-	add(recieverId, amount);
-	rm(giverId, amount);
+const give = async function(giverId, recieverId, amount, juice){
+	if(!rm(giverId, amount, juice)) return false;//not enough juice
+	add(recieverId, amount, juice);
+	rm(giverId, amount, juice);
 	return true;
 }
 

@@ -1,8 +1,6 @@
 const settings = require('../settings');
 const ops = require('../res/operations');
 
-
-
 async function main(qqt, channel, context, client){
 
 	let userId = Number(context['user-id']);

@@ -10,7 +10,7 @@ const Enmap = require('enmap');
 const opts = {
   identity: {
     username: settings.nickname,
-    password: settings.token
+    password: settings.oauth
   },
   channels: settings.channels
 };
