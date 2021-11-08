@@ -1,36 +1,34 @@
 const settings = require('../settings');
-const https = require('http');
+const https = require('https');
 const ops = require('../res/operations');
 
 
-let callback = function(response) {
+let callback = async function(response) {
 	let obj;
 	let res = "";
-  response.on('data', function (chunk) {
+  await response.on('data', function (chunk) {
     res += chunk;
-		console.log(res);
   });
 
-  response.on('end', function () {
-		obj=JSON.parse(res);
-		resolve(obj);
+  await response.on('end', function () {
+	  obj=JSON.parse(res);
 		console.log(obj);
-  });
+	});
+	return obj;
 }
 
 async function usernameToId(username){
 	let options = {
 		host: 'api.twitch.tv',
 		path: `/helix/users?login=${username}`,
-		port: 80,
 		method: 'GET',
 		headers: {
 			'Authorization': `Bearer ${settings.token}`,
 			'Client-Id': `${settings.clientID}`
 		}
 	};
-	let req = https.request(options, callback);
-	req.end();
+	let req = await https.request(options, callback);
+	await req.end();
 }
 
 
@@ -48,10 +46,11 @@ async function main(args, channel, context, client){
 	}
 
 	else {
-		return client.say(cahnnel, `@${context.username} Those aren't valid values`);
+		return client.say(channel, `@${context.username} Those aren't valid values`);
 	}
 
-	let recieverId = usernameToId(reciever);
+	console.log(reciever);
+	let recieverId = await usernameToId(reciever);
 	console.log(recieverId);
 
 	let userId = Number(context['user-id']);
@@ -81,7 +80,6 @@ exports.run = async (channel, context, msg, self, args, uptime, client) => {
 	try {
 			// Connect to the MongoDB cluster
 		await main(args, channel, context, client);
-
 	} 
 	catch (e) {
 		console.log(channel);
