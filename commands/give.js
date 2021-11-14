@@ -1,38 +1,23 @@
 const settings = require('../settings');
-const https = require('https');
+const axios = require("axios");
 const ops = require('../res/operations');
 
 
-let callback = async function(response) {
-	let obj;
-	let res = "";
-  await response.on('data', function (chunk) {
-    res += chunk;
-  });
-
-  await response.on('end', function () {
-	  obj=JSON.parse(res);
-		console.log(obj);
-	});
-	return obj;
-}
-
 async function usernameToId(username){
 	let options = {
-		host: 'api.twitch.tv',
-		path: `/helix/users?login=${username}`,
-		method: 'GET',
 		headers: {
 			'Authorization': `Bearer ${settings.token}`,
 			'Client-Id': `${settings.clientID}`
 		}
 	};
-	let req = await https.request(options, callback);
-	await req.end();
+		return await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, options)
+								.then((res) => {return Number(res.data.data[0].id)})
+								.catch((err) => console.log(err));
 }
 
 
 async function main(args, channel, context, client){
+
 	let qqt, reciever;
 
 	if(args[0].startsWith("@") && (Number(args[1]) > 0 || args[0]==="all")){
@@ -49,31 +34,24 @@ async function main(args, channel, context, client){
 		return client.say(channel, `@${context.username} Those aren't valid values`);
 	}
 
-	console.log(reciever);
 	let recieverId = await usernameToId(reciever);
-	console.log(recieverId);
 
 	let userId = Number(context['user-id']);
-	let juice = await ops.getJuice(userId);
+	let juiceReciever = await ops.getJuice(recieverId);
+	let juiceGiver = await ops.getJuice(userId);
 
-	if(qqt ==="all") qqt = juice; // if "all" gamble all 
+	if(qqt ==="all") qqt = juiceGiver; // if "all" gamble all 
 
 	if(!qqt || qqt <= 0){
 		return client.say(channel, `@${context.username} bruh input a valid number you dingus`);
 	}
-	if(juice == undefined){
-		await ops.add(userId, 5, juice);
-		return client.say(channel, `@${context.username} As this is your first time gambling, you got awarded 5 litters of juice ! PagMan`);
-	}
-	if(juice <= 0){
-		await ops.set(userId, 5);
-		return client.say(channel, `@${context.username} You had negative juice, here's 5 litters to gamble`);
-	}
-	if(juice < qqt){
+
+	if(juiceGiver < qqt){
 		return client.say(channel, `@${context.username} you don't have enough juice !`);
 	}
-	ops.give(userId, recieverId, qqt, juice); //gib 
-	return client.say(channel, `@${context.username} gave ${qqt} juice litters to @${reciever} PogU`);
+
+	ops.give(userId, recieverId, qqt, juiceReciever, juiceGiver); //gib 
+	return client.say(channel, `@${context.username} gave ${qqt} juiceReciever litters to @${reciever} PogU`);
 };
 
 exports.run = async (channel, context, msg, self, args, uptime, client) => {

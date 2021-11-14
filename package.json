@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/thebigblase/juicebot#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "chalk": "^4.1.2",
     "enmap": "^5.8.7",
     "mongodb": "^4.1.3",

@@ -12,26 +12,29 @@ client.connect();
 const add = async function(userId, amount, juice){
 	if (juice == undefined){
 		await juicers.insertOne({_id: userId, bank: amount});
+		console.log(`created ${amount} to ${userId}`);
 		return true;
 	}
 	await juicers.updateOne({_id:userId}, {$inc:{bank: amount}});
+	console.log(`added ${amount} to ${userId}`);
 	return true;
 }
 
 const rm = async function(userId, amount, juice){
 	if (juice == undefined){
 		await juicers.insertOne({_id: userId, bank: 0});
-		return;
+		console.log(`created ${0} to ${userId}`);
+		return false;
 	}
 	if(juice < amount) return false; //not enough juice
 	await juicers.updateOne({_id:userId}, {$inc:{bank: -amount}}); //rm juice
+	console.log(`removed ${amount} to ${userId}`);
 	return true;
 }
 
-const give = async function(giverId, recieverId, amount, juice){
-	if(!rm(giverId, amount, juice)) return false;//not enough juice
-	add(recieverId, amount, juice);
-	rm(giverId, amount, juice);
+const give = async function(giverId, recieverId, amount, juiceReciever, juiceGiver){
+	if(!rm(giverId, amount, juiceGiver)) return false;//not enough juice
+	add(recieverId, amount, juiceReciever);
 	return true;
 }
 
