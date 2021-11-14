@@ -44,15 +44,26 @@ const set = async function(userId, amount){
 }
 
 const getJuice = async function(userId){
-	res = await juicers.findOne({_id: userId});
+	let res = await juicers.findOne({_id: userId});
 	if(!res || res['bank'] == undefined) return undefined;
 	return res['bank'];
 }
+
+const getTop = async function(count){
+	let top = juicers.aggregate([{$sort : { bank:-1} }, {$limit:count}]);
+	let res = [];
+	for await ( const k of top){
+		res.push(k);
+	}
+	return res;
+}
+
 
 module.exports = {
 	add:add, 
 	rm:rm,
 	give:give,
 	getJuice:getJuice,
-	set:set
+	set:set,
+	getTop:getTop
 }
