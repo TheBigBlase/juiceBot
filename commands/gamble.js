@@ -10,8 +10,8 @@ async function main(qqt, channel, context, client){
 
 	qqt = Number(qqt);
 
-	if(!qqt || qqt <= 0){
-		return client.say(channel, `@${context.username} bruh input a valid number you dingus`);
+	if(qqt == undefined || qqt < 0){
+		return client.say(channel, `@${context.username} Bruh input a valid number you dingus`);
 	}
 	if(juice == undefined){
 		await ops.add(userId, 5, juice);
@@ -22,15 +22,15 @@ async function main(qqt, channel, context, client){
 		return client.say(channel, `@${context.username} You had negative juice, here's 5 liters to gamble`);
 	}
 	if(juice < qqt){
-		return client.say(channel, `@${context.username} you don't have enough juice !`);
+		return client.say(channel, `@${context.username} You don't have enough juice !`);
 	}
 	if(Math.random() > settings.threshold){ //win
 		await ops.add(userId, qqt, juice);
-		return client.say(channel, `@${context.username} PogU you won ! you now have ${juice + qqt}`);
+		return client.say(channel, `@${context.username} You won ! you now have ${juice + qqt} liters of juice ! PagMan`);
 	}
 	//loss
 	ops.rm(userId, qqt, juice);
-	return client.say(channel, `@${context.username} FeelsBadMan you lost... You've got ${juice - qqt} juices left`);
+	return client.say(channel, `@${context.username} You lost... You've got ${juice - qqt} juices left FeelsBadMan`);
 };
 
 exports.run = async (channel, context, msg, self, args, uptime, client) => {
