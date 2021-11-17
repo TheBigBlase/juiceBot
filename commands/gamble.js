@@ -14,7 +14,7 @@ async function main(qqt, channel, context, client){
 		return client.say(channel, `@${context.username} As this is your first time gambling, you got awarded 5 liters of juice ! PagMan`);
 	}
 
-	if(qqt.endsWith("!")) qqt = juice * Number(qqt.slice(0,-1))/100
+	if(qqt.endsWith("%")) qqt = juice * Number(qqt.slice(0,-1))/100
 	qqt = Number(qqt);
 
 	if(qqt == undefined || qqt == NaN || qqt < 0){
