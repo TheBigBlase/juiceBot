@@ -9,14 +9,13 @@ async function main(qqt, channel, context, client){
 	if(qqt ==="all") qqt = juice; // if "all" gamble all 
 	
 
-	if(qqt.endsWith("!")) qqt = juice * Number(qqt.slice(0,-1))/100
-	qqt = Number(qqt);
-
-
 	if(juice == undefined || juice == NaN){
 		await ops.add(userId, 5, juice);
 		return client.say(channel, `@${context.username} As this is your first time gambling, you got awarded 5 liters of juice ! PagMan`);
 	}
+
+	if(qqt.endsWith("!")) qqt = juice * Number(qqt.slice(0,-1))/100
+	qqt = Number(qqt);
 
 	if(qqt == undefined || qqt == NaN || qqt < 0){
 		return client.say(channel, `@${context.username} Bruh input a valid number you dingus`);
