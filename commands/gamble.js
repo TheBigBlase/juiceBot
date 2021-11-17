@@ -15,18 +15,18 @@ async function main(qqt, channel, context, client){
 	}
 	if(juice == undefined){
 		await ops.add(userId, 5, juice);
-		return client.say(channel, `@${context.username} As this is your first time gambling, you got awarded 5 litters of juice ! PagMan`);
+		return client.say(channel, `@${context.username} As this is your first time gambling, you got awarded 5 liters of juice ! PagMan`);
 	}
 	if(juice <= 0){
 		await ops.set(userId, 5);
-		return client.say(channel, `@${context.username} You had negative juice, here's 5 litters to gamble`);
+		return client.say(channel, `@${context.username} You had negative juice, here's 5 liters to gamble`);
 	}
 	if(juice < qqt){
 		return client.say(channel, `@${context.username} you don't have enough juice !`);
 	}
 	if(Math.random() > settings.threshold){ //win
 		await ops.add(userId, qqt, juice);
-		return client.say(channel, `@${context.username} PogU you won ! you know have ${juice + qqt}`);
+		return client.say(channel, `@${context.username} PogU you won ! you now have ${juice + qqt}`);
 	}
 	//loss
 	ops.rm(userId, qqt, juice);

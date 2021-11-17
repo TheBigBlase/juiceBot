@@ -51,7 +51,7 @@ async function main(args, channel, context, client){
 	}
 
 	ops.give(userId, recieverId, qqt, juiceReciever, juiceGiver); //gib 
-	return client.say(channel, `@${context.username} gave ${qqt} juiceReciever litters to @${reciever} PogU`);
+	return client.say(channel, `@${context.username} gave ${qqt} juiceReciever liters to @${reciever} PogU`);
 };
 
 exports.run = async (channel, context, msg, self, args, uptime, client) => {
