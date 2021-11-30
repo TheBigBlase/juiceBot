@@ -15,7 +15,7 @@ const add = async function(userId, amount, juice){
 		console.log(`created ${amount} to ${userId}`);
 		return true;
 	}
-	await juicers.updateOne({_id:userId}, {$inc:{bank: amount}});
+	await juicers.updateOne({_id:userId}, {$inc:{bank: Math.ceil(amount)}});
 	console.log(`added ${amount} to ${userId}`);
 	return true;
 }
@@ -27,7 +27,7 @@ const rm = async function(userId, amount, juice){
 		return false;
 	}
 	if(juice < amount) return false; //not enough juice
-	await juicers.updateOne({_id:userId}, {$inc:{bank: -amount}}); //rm juice
+	await juicers.updateOne({_id:userId}, {$inc:{bank: Math.ceil(-amount)}}); //rm juice
 	console.log(`removed ${amount} to ${userId}`);
 	return true;
 }
@@ -39,7 +39,7 @@ const give = async function(giverId, recieverId, amount, juiceReciever, juiceGiv
 }
 
 const set = async function(userId, amount){
-	await juicers.updateOne({_id:userId}, {$set: {bank: amount}}); // WARNING undefined issue
+	await juicers.updateOne({_id:userId}, {$set: {bank: Math.ceil(amount)}}); // WARNING undefined issue
 	return true;
 }
 
