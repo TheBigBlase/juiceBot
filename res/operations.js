@@ -1,13 +1,9 @@
-const {MongoClient} = require('mongodb');
-const settings = require('../settings');
+const { getDb } = require('./mongoUtils');
 
-const uri = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
 
-const client = new MongoClient(uri);
-const db = client.db(settings.database);
+const db = getDb();
 const juicers = db.collection("Juicers");
 
-client.connect();
 
 const add = async function(userId, amount, juice){
 	if (juice == undefined){
@@ -58,8 +54,22 @@ const getTop = async function(count){
 	return res;
 }
 
+const usernameToId = async function usernameToId(username){
+	let options = {
+		headers: {
+			'Authorization': `Bearer ${settings.token}`,
+			'Client-Id': `${settings.clientID}`
+		}
+	};
+		return await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, options)
+								.then((res) => {return Number(res.data.data[0].id)})
+								.catch((err) => console.log(err));
+}
+
+
 
 module.exports = {
+	usernameToId:usernameToId,
 	add:add, 
 	rm:rm,
 	give:give,

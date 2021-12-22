@@ -1,19 +1,7 @@
-const settings = require('../settings');
-const axios = require("axios");
 const ops = require('../res/operations');
+const {usernameToId} = require('../res/operations');
+const say = require('../res/sendMessage');
 
-
-async function usernameToId(username){
-	let options = {
-		headers: {
-			'Authorization': `Bearer ${settings.token}`,
-			'Client-Id': `${settings.clientID}`
-		}
-	};
-		return await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, options)
-								.then((res) => {return Number(res.data.data[0].id)})
-								.catch((err) => console.log(err));
-}
 
 
 async function main(args, channel, context, client){
@@ -31,7 +19,7 @@ async function main(args, channel, context, client){
 	}
 
 	else {
-		return client.say(channel, `@${context.username} Those aren't valid values`);
+		return say(channel, `@${context.username} Those aren't valid values`, client);
 	}
 
 	let recieverId = await usernameToId(reciever);
@@ -43,15 +31,15 @@ async function main(args, channel, context, client){
 	if(qqt ==="all") qqt = juiceGiver; // if "all" gamble all 
 
 	if(!qqt || qqt <= 0){
-		return client.say(channel, `@${context.username} bruh input a valid number you dingus`);
+		return say(channel, `@${context.username} bruh input a valid number you dingus`, client);
 	}
 
 	if(juiceGiver < qqt){
-		return client.say(channel, `@${context.username} you don't have enough juice !`);
+		return say(channel, `@${context.username} you don't have enough juice !`, client);
 	}
 
 	ops.give(userId, recieverId, qqt, juiceReciever, juiceGiver); //gib 
-	return client.say(channel, `@${context.username} gave ${qqt} juiceReciever liters to @${reciever} PogU`);
+	return say(channel, `@${context.username} gave ${qqt} juiceReciever liters to @${reciever} PogU`, client);
 };
 
 exports.run = async (channel, context, msg, self, args, uptime, client) => {
@@ -60,7 +48,6 @@ exports.run = async (channel, context, msg, self, args, uptime, client) => {
 		await main(args, channel, context, client);
 	} 
 	catch (e) {
-		console.log(channel);
 		console.error(e);
 	}
 };
