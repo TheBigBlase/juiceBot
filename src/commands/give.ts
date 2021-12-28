@@ -1,5 +1,5 @@
 import tmi from 'tmi.js';
-import {usernameToId, give, getJuice} from '../operations';
+import {usernameToId, give as giveOps, getJuice} from '../operations';
 import {say} from '../sendMessage';
 
 
@@ -41,11 +41,11 @@ async function main(args:string[], channel:any, context:any, client:tmi.Client){
 		return say(channel, `@${context.username} you don't have enough juice !`, client);
 	}
 
-	give(userId, recieverId, qqt, juiceReciever, juiceGiver); //gib 
+	giveOps(userId, recieverId, qqt, juiceReciever, juiceGiver); //gib 
 	return say(channel, `@${context.username} gave ${qqt} juiceReciever liters to @${reciever} PogU`, client);
 };
 
-exports.run = async (channel:string, context:any, args:string[], client:tmi.Client) => {
+export default async function give(channel:string, context:any, args:string[], client:tmi.Client){
 	try {
 			// Connect to the MongoDB cluster
 		await main(args, channel, context, client);

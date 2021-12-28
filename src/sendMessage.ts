@@ -1,7 +1,8 @@
+import tmi from 'tmi.js';
 let oldMessage:string;
 let newMessage:string;
 
-const main = async function (channel: string, content: string, client: any){
+const main = async function (channel: string, content: string, client:tmi.Client ){
 	newMessage = content; 
 	if(newMessage === oldMessage){
 		oldMessage = "";
@@ -13,9 +14,9 @@ const main = async function (channel: string, content: string, client: any){
 	}
 }
 
-export async function say(channel: string, content: string, client: any){
+export async function say(channel: string, content: string, client: tmi.Client){
 	try {
-		await main(content, client, channel);
+		await main(channel, content, client);
 	}
 	catch (e) {
 		console.error(e);

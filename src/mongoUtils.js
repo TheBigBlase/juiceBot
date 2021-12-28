@@ -1,20 +1,17 @@
-const {MongoClient} = require('mongodb');
-const settings = require('../settings');
+import * as mongoDB from "mongodb";
+import settings from "../../settings.json"
 
+export const collections: { juicers?: mongoDB.Collection } = {}
 
-const url = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
+export async function connectToDatabase() {
 
-let _db;
+	const url = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
+	const client: mongoDB.MongoClient = new mongoDB.MongoClient(url);
+	await client.connect();
 
-module.exports = {
-  connectToServer: function( callback ) {
-    MongoClient.connect( url,  { useNewUrlParser: true }, function( err, mongoClient ) {
-      _db  = mongoClient.db(settings.database);
-      return callback( err );
-    } );
-  },
+	const db: mongoDB.Db = client.db(settings.database);
+	const juicersCollection: mongoDB.Collection = db.collection("juicers");
+	collections.juicers = juicersCollection;
 
-  getDb: function() {
-    return _db;
-  }
-};
+	console.log(`Successfully connected to database: ${db.databaseName} and collection: ${juicersCollection.collectionName}`);
+}

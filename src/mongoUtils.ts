@@ -1,22 +1,19 @@
-import settings from "../settings.json";
-import {MongoClient, Db, Collection} from 'mongodb';
+import * as mongoDB from "mongodb";
+import settings from "../settings.json"
 
-let _db:Db;
-const url = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
+export const collections: { juicers?: mongoDB.Collection } = {};
 
+export async function connectToDatabase() {
 
+	const url = `mongodb://${settings.username}:${settings.password}@${settings.ip}:${settings.port}/${settings.database}`;
+	const client: mongoDB.MongoClient = new mongoDB.MongoClient(url);
+	await client.connect();
 
-export async function connectToServer( callback:Function ) {
-	MongoClient.connect( url, function( err, client:any ) {
-		_db  = client.db('juice');
-		return callback( err );
-	} );
+	const db: mongoDB.Db = client.db(settings.database);
+	const juicersCollection: mongoDB.Collection = db.collection("Juicers");
+	collections.juicers = juicersCollection;
+
+	console.log(`Successfully connected to database: ${db.databaseName} and collection: ${juicersCollection.collectionName}`);
+
 }
 
-export async function getDb(){
-	return _db;
-}
-
-export async function getCol(col:string){
-	return _db.collection(col);
-}

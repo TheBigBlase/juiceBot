@@ -1,14 +1,13 @@
-import { getDb, getCol } from './mongoUtils';
-import {Collection, Db, ObjectId} from 'mongodb';
+import { collections } from './mongoUtils';
+import {Collection, ObjectId} from 'mongodb';
 import settings from '../settings.json';
 import axios from 'axios';
 
 
-const db:any = getDb().collection("Juicers");
-const juicers:any = db.collection("Juicers");
-
 
 export const add = async function(userId:number, amount:number, juice:number){
+	const juicers:Collection|undefined = collections.juicers;
+	if(juicers == undefined) return;
 	if (juice == undefined){
 		juicers.insertOne({_id: new ObjectId(userId), bank: amount});
 		console.log(`created ${amount} to ${userId}`);
@@ -20,6 +19,9 @@ export const add = async function(userId:number, amount:number, juice:number){
 }
 
 export const rm = async function(userId:number, amount:number, juice:number){
+	const juicers:Collection|undefined = collections.juicers;
+	if(juicers == undefined) return;
+
 	if (juice == undefined){
 		await juicers.insertOne({_id: new ObjectId(userId), bank: 0});
 		console.log(`created ${0} to ${userId}`);
@@ -38,18 +40,26 @@ export const give = async function(giverId:number, recieverId:number, amount:num
 }
 
 export const set = async function(userId:number, amount:number){
+	const juicers:Collection|undefined = collections.juicers;
+
+	if(juicers == undefined) return;
 	await juicers.updateOne({_id:userId}, {$set: {bank: Math.ceil(amount)}}); // WARNING undefined issue
 	return true;
 }
 
 export const getJuice = async function(userId:number){
+	const juicers:Collection|undefined = collections.juicers;
+	if(juicers == undefined) return;
+
 	let res = await juicers.findOne({_id: userId});
 	if(!res || res['bank'] == undefined) return undefined;
 	return res['bank'];
 }
 
 export const getTop = async function(count:number){
-	console.log(db);
+	const juicers:Collection|undefined = collections.juicers;
+	if(juicers == undefined) return;
+
 	let top = juicers.aggregate([{$sort : { bank:-1} }, {$limit:count}]);
 	let res = [];
 	for await ( const k of top){
