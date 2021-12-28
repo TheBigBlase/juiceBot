@@ -1,24 +1,27 @@
-const { getDb } = require('./mongoUtils');
+import { getDb, getCol } from './mongoUtils';
+import {Collection, Db, ObjectId} from 'mongodb';
+import settings from '../settings.json';
+import axios from 'axios';
 
 
-const db = getDb();
-const juicers = db.collection("Juicers");
+const db:any = getDb().collection("Juicers");
+const juicers:any = db.collection("Juicers");
 
 
-const add = async function(userId, amount, juice){
+export const add = async function(userId:number, amount:number, juice:number){
 	if (juice == undefined){
-		await juicers.insertOne({_id: userId, bank: amount});
+		juicers.insertOne({_id: new ObjectId(userId), bank: amount});
 		console.log(`created ${amount} to ${userId}`);
 		return true;
 	}
-	await juicers.updateOne({_id:userId}, {$inc:{bank: Math.ceil(amount)}});
+	await juicers.updateOne({_id: userId}, {$inc:{bank: Math.ceil(amount)}});
 	console.log(`added ${amount} to ${userId}`);
 	return true;
 }
 
-const rm = async function(userId, amount, juice){
+export const rm = async function(userId:number, amount:number, juice:number){
 	if (juice == undefined){
-		await juicers.insertOne({_id: userId, bank: 0});
+		await juicers.insertOne({_id: new ObjectId(userId), bank: 0});
 		console.log(`created ${0} to ${userId}`);
 		return false;
 	}
@@ -28,24 +31,25 @@ const rm = async function(userId, amount, juice){
 	return true;
 }
 
-const give = async function(giverId, recieverId, amount, juiceReciever, juiceGiver){
+export const give = async function(giverId:number, recieverId:number, amount:number, juiceReciever:number, juiceGiver:number){
 	if(!rm(giverId, amount, juiceGiver)) return false;//not enough juice
 	add(recieverId, amount, juiceReciever);
 	return true;
 }
 
-const set = async function(userId, amount){
+export const set = async function(userId:number, amount:number){
 	await juicers.updateOne({_id:userId}, {$set: {bank: Math.ceil(amount)}}); // WARNING undefined issue
 	return true;
 }
 
-const getJuice = async function(userId){
+export const getJuice = async function(userId:number){
 	let res = await juicers.findOne({_id: userId});
 	if(!res || res['bank'] == undefined) return undefined;
 	return res['bank'];
 }
 
-const getTop = async function(count){
+export const getTop = async function(count:number){
+	console.log(db);
 	let top = juicers.aggregate([{$sort : { bank:-1} }, {$limit:count}]);
 	let res = [];
 	for await ( const k of top){
@@ -54,26 +58,16 @@ const getTop = async function(count){
 	return res;
 }
 
-const usernameToId = async function usernameToId(username){
+export const usernameToId = async function usernameToId(username:string){
 	let options = {
 		headers: {
 			'Authorization': `Bearer ${settings.token}`,
 			'Client-Id': `${settings.clientID}`
 		}
 	};
-		return await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, options)
+		let res:number|void = await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, options)
 								.then((res) => {return Number(res.data.data[0].id)})
 								.catch((err) => console.log(err));
-}
-
-
-
-module.exports = {
-	usernameToId:usernameToId,
-	add:add, 
-	rm:rm,
-	give:give,
-	getJuice:getJuice,
-	set:set,
-	getTop:getTop
+		if(res==undefined) return -1; 
+		else return res;
 }

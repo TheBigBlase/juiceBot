@@ -4,20 +4,20 @@ let newMessage:string;
 const main = async function (channel: string, content: string, client: any){
 	newMessage = content; 
 	if(newMessage === oldMessage){
-		oldMessage = undefined;
-		return client.say(channel, content + ' ');
+		oldMessage = "";
+		client.say(channel, content + ' ');
 	}
 	else{
 		oldMessage = newMessage;
-		return client.say(channel, content);
+		client.say(channel, content);
 	}
 }
 
-exports.run = async(channel: string, content: string, client: any) => {
+export async function say(channel: string, content: string, client: any){
 	try {
 		await main(content, client, channel);
 	}
 	catch (e) {
 		console.error(e);
 	}
-}
+};

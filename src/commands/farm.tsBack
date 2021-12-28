@@ -1,0 +1,17 @@
+import tmi from 'tmi.js';
+import * as ops  from '../res/operations';
+
+async function main(args:string[], channel:string, context:any, client:tmi.Client){
+
+}
+
+exports.run = async (channel:string, context:any, args:string[], client:tmi.Client) => {
+	try {
+			// Connect to the MongoDB server
+		await main(args, channel, context, client);
+	} 
+	catch (e) {
+		console.log(channel);
+		console.error(e);
+	}
+}
